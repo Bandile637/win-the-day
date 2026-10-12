@@ -1,0 +1,681 @@
+
+:root {
+  --bg: #0b0c12;
+  --sidebar: #0e1018;
+  --card: #141824;
+  --card-hover: #1b2030;
+  --border: #272d40;
+  --purple: #8057ff;
+  --purple-light: #b69aff;
+  --text: #f4f2fb;
+  --muted: #969db2;
+  --green: #62d6a5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  min-height: 100vh;
+}
+
+button, input, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr) 285px;
+}
+
+/* Sidebar */
+
+.sidebar {
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 5px;
+  margin-bottom: 48px;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #a98aff, #6740e8);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 23px;
+  color: white;
+  box-shadow: 0 5px 22px #8057ff30;
+}
+
+.brand h2 {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.brand p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.navigation {
+  display: grid;
+  gap: 9px;
+}
+
+.nav-item {
+  border: 0;
+  border-radius: 11px;
+  padding: 14px 15px;
+  background: transparent;
+  color: #aeb4c8;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  transition: 0.2s;
+}
+
+.nav-item span {
+  width: 22px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.nav-item:hover {
+  background: var(--card-hover);
+  color: white;
+}
+
+.nav-item.active {
+  background: #2a2148;
+  color: white;
+  box-shadow: inset 3px 0 var(--purple);
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 15px 5px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px #62d6a580;
+}
+
+/* Main content */
+
+.main-content {
+  min-width: 0;
+  padding: 30px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.eyebrow {
+  color: var(--purple-light);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.8px;
+  margin-bottom: 11px;
+}
+
+.topbar h1 {
+  font-size: clamp(23px, 2.5vw, 32px);
+  letter-spacing: -1px;
+}
+
+.profile {
+  height: 42px;
+  width: 42px;
+  flex-shrink: 0;
+  border: 1px solid #7958cc;
+  background: #292044;
+  color: #d5c7ff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+/* Cards */
+
+.panel-card,
+.content-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 22px;
+}
+
+.content-card {
+  margin-bottom: 20px;
+}
+
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.card-heading h2 {
+  font-size: 17px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.primary-btn {
+  border: 0;
+  border-radius: 9px;
+  background: var(--purple);
+  color: white;
+  font-weight: 650;
+  padding: 11px 16px;
+  transition: 0.2s;
+}
+
+.primary-btn:hover {
+  background: #936fff;
+  transform: translateY(-1px);
+}
+
+.secondary-btn {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--card-hover);
+  color: var(--text);
+  padding: 10px 13px;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #0e121d;
+  color: var(--text);
+  padding: 12px 13px;
+  border-radius: 9px;
+  outline: none;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--purple);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* Right panel */
+
+.right-panel {
+  border-left: 1px solid var(--border);
+  background: #0d1018;
+  padding: 30px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.focus-card {
+  background: linear-gradient(145deg, #251b43, #141824 75%);
+}
+
+.focus-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  background: #8057ff25;
+  border-radius: 12px;
+  color: var(--purple-light);
+  font-size: 26px;
+  margin: 22px 0 15px;
+}
+
+.panel-card h3 {
+  font-size: 17px;
+  line-height: 1.5;
+  margin-bottom: 9px;
+}
+
+.rule {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: #d5d8e5;
+}
+
+.rule:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.rule span {
+  color: var(--purple-light);
+  margin-right: 10px;
+  font-weight: 750;
+}
+
+.mini-card {
+  margin-top: auto;
+}
+
+/* Responsive layout */
+
+@media (max-width: 1100px) {
+  .app {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .right-panel {
+    display: none;
+  }
+
+  .main-content {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 650px) {
+  .app {
+    display: block;
+    padding-bottom: 75px;
+  }
+
+  .sidebar {
+    position: fixed;
+    z-index: 10;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    min-height: 0;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    border-right: 0;
+    border-top: 1px solid var(--border);
+    background: #10121c;
+  }
+
+  .brand,
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .navigation {
+    display: flex;
+    justify-content: space-around;
+    gap: 4px;
+  }
+
+  .nav-item {
+    flex: 1;
+    padding: 9px 3px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    font-size: 10px;
+    text-align: center;
+    border-radius: 9px;
+  }
+
+  .nav-item span {
+    font-size: 19px;
+  }
+
+  .nav-item.active {
+    box-shadow: inset 0 2px var(--purple);
+  }
+
+  .main-content {
+    padding: 23px 15px;
+  }
+
+  .topbar {
+    margin-bottom: 23px;
+  }
+
+  .content-card {
+    padding: 17px;
+  }
+}
+
+/* ==============================
+   WIN THE DAY — INTERACTIONS
+================================ */
+
+/* Smooth experience */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+.panel-card,
+.content-card,
+.nav-item,
+input,
+textarea {
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+
+/* Sidebar navigation */
+.nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item:hover {
+  background: #211b35;
+  transform: translateX(4px);
+}
+
+.nav-item.active {
+  box-shadow: inset 3px 0 var(--purple),
+              0 0 18px #8057ff12;
+}
+
+.nav-item:active {
+  transform: scale(0.97);
+}
+
+/* Interactive cards */
+.content-card:hover,
+.panel-card:hover {
+  border-color: #554078;
+  box-shadow: 0 8px 28px #00000020;
+}
+
+.content-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Buttons */
+.primary-btn,
+.secondary-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.primary-btn:hover {
+  background: #956fff;
+  box-shadow: 0 0 22px #8057ff45;
+  transform: translateY(-2px);
+}
+
+.secondary-btn:hover {
+  background: #29243a;
+  border-color: var(--purple);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: scale(0.96);
+}
+
+/* Purple focus glow on fields */
+input:focus,
+textarea:focus {
+  border-color: var(--purple-light);
+  box-shadow: 0 0 0 3px #8057ff20;
+}
+
+/* Checklist interaction */
+#task-list label {
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+#task-list label:hover {
+  background: #1b2030;
+  transform: translateX(3px);
+}
+
+#task-list input[type="checkbox"] {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#task-list input[type="checkbox"]:hover {
+  transform: scale(1.15);
+}
+
+#task-list input[type="checkbox"]:checked {
+  accent-color: var(--purple);
+}
+
+/* Right panel cards */
+.focus-card:hover .focus-icon {
+  transform: rotate(12deg) scale(1.08);
+  box-shadow: 0 0 20px #8057ff30;
+}
+
+.focus-icon {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Profile interaction */
+.profile {
+  cursor: pointer;
+  transition: transform 0.25s ease,
+              box-shadow 0.25s ease;
+}
+
+.profile:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px #8057ff55;
+}
+
+/* Smooth page entrance */
+#page-content {
+  animation: pageEnter 0.35s ease both;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Keyboard accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--purple-light);
+  outline-offset: 3px;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hover effects only on devices with a real hover pointer */
+@media (hover: hover) {
+  .content-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Mobile: avoid hover-style movement on touch */
+@media (hover: none) {
+  .nav-item:hover,
+  .content-card:hover,
+  .panel-card:hover,
+  #task-list label:hover {
+    transform: none;
+  }
+}
+
+/* Task completion animation */
+#task-list label {
+  transition: opacity 0.25s ease, background 0.25s ease;
+}
+
+#task-list input[type="checkbox"]:checked + span {
+  color: var(--green);
+  transition: color 0.25s ease;
+}
+
+/* 100% completion celebration */
+.completion-message {
+  padding: 16px;
+  margin-top: 16px;
+  border: 1px solid var(--green);
+  border-radius: 14px;
+  background: rgba(98, 214, 165, 0.08);
+  color: var(--green);
+  animation: celebrationPop 0.4s ease;
+}
+
+@keyframes celebrationPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  70% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Smooth task completion */
+#task-list label {
+  transition: opacity 0.25s ease, transform 0.25s ease,
+              background 0.25s ease;
+}
+
+#task-list label:has(input:checked) {
+  opacity: 0.75;
+}
+
+#task-list label:has(input:checked) span {
+  text-decoration: line-through;
+  text-decoration-color: var(--green);
+}
+
+/* Small pop when checking a task */
+#task-list input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--green);
+}
+
+/* WIN THE DAY — checklist layout fix */
+#task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+#task-list label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  min-height: 64px;
+  text-align: left;
+}
+
+#task-list label input[type="checkbox"] {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  order: 0;
+}
+
+#task-list label span {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  text-align: left;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+/* Better spacing on narrow screens */
+@media (max-width: 600px) {
+  #task-list label {
+    padding: 14px;
+    min-height: 56px;
+  }
+}
+

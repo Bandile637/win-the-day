@@ -1,0 +1,21 @@
+
+{
+  "id": "./",
+  "name": "WIN THE DAY",
+  "short_name": "WIN THE DAY",
+  "description": "Build discipline. Track your growth. Win the day.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#101014",
+  "theme_color": "#8b5cf6",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
