@@ -5,74 +5,215 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b0c12">
-  <meta name="description" content="Build yourself. Win the day.">
+  <meta name="description" content="A private space to learn, reflect, create, and grow.">
   <title>WIN THE DAY</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="app">
 
+    <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
+
       <div class="brand">
         <div class="brand-icon">W</div>
         <div>
           <h2>WIN THE DAY</h2>
-          <p>Your personal system</p>
+          <p>A space of your own.</p>
         </div>
       </div>
 
-      <nav class="navigation">
-        <button class="nav-item active" data-page="today">
-          <span>▦</span> Today
+      <nav class="navigation" aria-label="Main navigation">
+
+        <!-- HOME -->
+        <button class="nav-item active" data-page="home">
+          <span aria-hidden="true">⌂</span>
+          Home
         </button>
-        <button class="nav-item" data-page="growth">
-          <span>↗</span> Growth
+
+        <!-- JOURNAL -->
+        <div class="nav-group">
+          <button class="nav-item nav-toggle"
+                  data-page="journal"
+                  aria-expanded="false"
+                  aria-controls="journal-menu">
+            <span aria-hidden="true">▤</span>
+            Journal
+            <span class="nav-chevron" aria-hidden="true">›</span>
+          </button>
+
+          <div class="sub-navigation" id="journal-menu" hidden>
+            <button class="sub-nav-item" data-page="entries">
+              Recent entries
+            </button>
+            <button class="sub-nav-item" data-page="reflections">
+              Daily reflections
+            </button>
+            <button class="sub-nav-item" data-page="memories">
+              Moments &amp; memories
+            </button>
+          </div>
+        </div>
+
+        <!-- EXPLORE -->
+        <div class="nav-group">
+          <button class="nav-item nav-toggle"
+                  data-page="explore"
+                  aria-expanded="false"
+                  aria-controls="explore-menu">
+            <span aria-hidden="true">⌕</span>
+            Explore
+            <span class="nav-chevron" aria-hidden="true">›</span>
+          </button>
+
+          <div class="sub-navigation" id="explore-menu" hidden>
+            <button class="sub-nav-item" data-page="knowledge">
+              Knowledge &amp; learning
+            </button>
+            <button class="sub-nav-item" data-page="psychology">
+              Psychology &amp; philosophy
+            </button>
+            <button class="sub-nav-item" data-page="culture">
+              Music &amp; culture
+            </button>
+            <button class="sub-nav-item" data-page="ideas">
+              Ideas &amp; discoveries
+            </button>
+            <button class="sub-nav-item" data-page="creativity">
+              Creativity
+            </button>
+          </div>
+        </div>
+
+        <!-- MY GROWTH -->
+        <div class="nav-group">
+          <button class="nav-item nav-toggle"
+                  data-page="growth"
+                  aria-expanded="false"
+                  aria-controls="growth-menu">
+            <span aria-hidden="true">↗</span>
+            My Growth
+            <span class="nav-chevron" aria-hidden="true">›</span>
+          </button>
+
+          <div class="sub-navigation" id="growth-menu" hidden>
+            <button class="sub-nav-item" data-page="habits">
+              Habits &amp; discipline
+            </button>
+            <button class="sub-nav-item" data-page="fitness">
+              Fitness &amp; health
+            </button>
+            <button class="sub-nav-item" data-page="learning">
+              Skills I'm building
+            </button>
+            <button class="sub-nav-item" data-page="milestones">
+              Milestones
+            </button>
+          </div>
+        </div>
+
+        <!-- MY WORLD -->
+        <div class="nav-group">
+          <button class="nav-item nav-toggle"
+                  data-page="world"
+                  aria-expanded="false"
+                  aria-controls="world-menu">
+            <span aria-hidden="true">✧</span>
+            My World
+            <span class="nav-chevron" aria-hidden="true">›</span>
+          </button>
+
+          <div class="sub-navigation" id="world-menu" hidden>
+            <button class="sub-nav-item" data-page="music">
+              My music
+            </button>
+            <button class="sub-nav-item" data-page="interests">
+              Things I love
+            </button>
+            <button class="sub-nav-item" data-page="inspiration">
+              Inspiration
+            </button>
+          </div>
+        </div>
+
+        <!-- ARCHIVE -->
+        <button class="nav-item" data-page="archive">
+          <span aria-hidden="true">▣</span>
+          Archive
         </button>
-        <button class="nav-item" data-page="vault">
-          <span>▣</span> Vault
-        </button>
-        <button class="nav-item" data-page="progress">
-          <span>◷</span> Progress
-        </button>
+
       </nav>
 
       <div class="sidebar-bottom">
         <div class="status-dot"></div>
         <span>Your journey. Your rules.</span>
       </div>
+
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="main-content">
+
       <header class="topbar">
         <div>
-          <p class="eyebrow" id="today-date">YOUR DAILY SYSTEM</p>
-          <h1 id="page-title">Today's mission</h1>
+          <p class="eyebrow" id="today-date">YOUR OWN LITTLE WORLD</p>
+          <h1 id="page-title">Welcome home.</h1>
         </div>
-        <div class="profile">B</div>
+
+        <div class="profile" title="Your personal space" aria-label="Your profile">
+          B
+        </div>
       </header>
 
-      <section id="page-content"></section>
+      <!-- JavaScript will render the selected page here -->
+      <section id="page-content" aria-live="polite"></section>
+
     </main>
 
+    <!-- RIGHT SIDEBAR -->
     <aside class="right-panel">
+
       <div class="panel-card focus-card">
-        <p class="eyebrow">DAILY FOCUS</p>
-        <div class="focus-icon">✦</div>
-        <h3>Win the next hour.</h3>
-        <p>You don't need a perfect day. You need your next good decision.</p>
+        <p class="eyebrow">A LITTLE REMINDER</p>
+
+        <div class="focus-icon" aria-hidden="true">✦</div>
+
+        <h3>There's more to life than getting things done.</h3>
+
+        <p class="muted">
+          Learn something. Keep a memory. Follow a thought.
+          Make room for the person you're becoming.
+        </p>
       </div>
 
       <div class="panel-card">
-        <p class="eyebrow">YOUR RULES</p>
-        <div class="rule"><span>01</span> Do the work.</div>
-        <div class="rule"><span>02</span> Protect your focus.</div>
-        <div class="rule"><span>03</span> Reset after setbacks.</div>
+        <p class="eyebrow">YOUR PRINCIPLES</p>
+
+        <div class="rule">
+          <span>01</span> Stay curious.
+        </div>
+
+        <div class="rule">
+          <span>02</span> Be present.
+        </div>
+
+        <div class="rule">
+          <span>03</span> Grow at your own pace.
+        </div>
       </div>
 
       <div class="panel-card mini-card">
-        <p class="eyebrow">THE OBJECTIVE</p>
-        <h3>Become someone you respect.</h3>
+        <p class="eyebrow">A SPACE OF YOUR OWN</p>
+
+        <h3>Some things don't need an audience.</h3>
+
+        <p class="muted">
+          Your thoughts, your memories, your progress.
+          Keep what matters here.
+        </p>
       </div>
+
     </aside>
 
   </div>
