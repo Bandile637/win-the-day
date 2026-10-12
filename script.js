@@ -14,6 +14,26 @@ const DEFAULT_TASKS = [
   { id: 10, title: "Practice composure and protect sleep", done: false }
 ];
 
+const PAGE_TITLES = {
+  home: "Welcome home.",
+  entries: "Recent entries",
+  reflections: "Daily reflections",
+  memories: "Moments & memories",
+  knowledge: "Knowledge & learning",
+  psychology: "Psychology & philosophy",
+  culture: "Music & culture",
+  ideas: "Ideas & discoveries",
+  creativity: "Creativity",
+  habits: "Habits & discipline",
+  fitness: "Fitness & health",
+  learning: "Skills I'm building",
+  milestones: "Milestones",
+  music: "My music",
+  interests: "Things I love",
+  inspiration: "Inspiration",
+  archive: "Your archive"
+};
+
 function todayKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -23,52 +43,23 @@ function todayKey(date = new Date()) {
 
 function loadData() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 
     return {
-      days: saved?.days || {},
-      goals: Array.isArray(saved?.goals) ? saved.goals : [],
-      notes: typeof saved?.notes === "string" ? saved.notes : ""
+      days: saved.days || {},
+      goals: Array.isArray(saved.goals) ? saved.goals : [],
+      notes: typeof saved.notes === "string" ? saved.notes : "",
+      pages: saved.pages && typeof saved.pages === "object"
+        ? saved.pages
+        : {}
     };
   } catch {
-    return { days: {}, goals: [], notes: "" };
+    return { days: {}, goals: [], notes: "", pages: {} };
   }
 }
 
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function getToday() {
-  const data = loadData();
-  const key = todayKey();
-
-  if (!data.days[key]) {
-    data.days[key] = {
-      tasks: DEFAULT_TASKS.map(task => ({ ...task }))
-    };
-    saveData(data);
-  }
-
-  // Keep older saved days compatible with the current checklist.
-  const tasks = data.days[key].tasks || [];
-  const existingIds = new Set(tasks.map(task => task.id));
-
-  DEFAULT_TASKS.forEach(task => {
-    if (!existingIds.has(task.id)) {
-      tasks.push({ ...task });
-    }
-  });
-
-  data.days[key].tasks = DEFAULT_TASKS.map(defaultTask => {
-    const existing = tasks.find(task => task.id === defaultTask.id);
-    return existing
-      ? { ...defaultTask, done: Boolean(existing.done) }
-      : { ...defaultTask };
-  });
-
-  saveData(data);
-  return data.days[key];
 }
 
 function escapeHTML(value) {
@@ -81,99 +72,97 @@ function escapeHTML(value) {
   })[character]);
 }
 
+function getToday() {
+  const data = loadData();
+  const key = todayKey();
+
+  if (!data.days[key]) {
+    data.days[key] = {
+      tasks: DEFAULT_TASKS.map(task => ({ ...task }))
+    };
+  }
+
+  const existingTasks = data.days[key].tasks || [];
+
+  data.days[key].tasks = DEFAULT_TASKS.map(defaultTask => {
+    const existing = existingTasks.find(task => task.id === defaultTask.id);
+    return existing
+      ? { ...defaultTask, done: Boolean(existing.done) }
+      : { ...defaultTask };
+  });
+
+  saveData(data);
+  return data.days[key];
+}
+
+/* HOME */
+
 function renderToday() {
   const day = getToday();
   const completed = day.tasks.filter(task => task.done).length;
   const total = day.tasks.length;
-  const percentage = total
-    ? Math.round((completed / total) * 100)
-    : 0;
+  const percentage = Math.round((completed / total) * 100);
 
   document.getElementById("page-content").innerHTML = `
-    <section class="progress-card">
-      <h2>Today's Mission</h2>
-      <p style="margin:8px 0 14px">
-        ${completed} of ${total} tasks complete
+    <section class="content-card">
+      <p class="eyebrow">YOUR OWN LITTLE WORLD</p>
+      <h2 style="font-size:26px;margin-bottom:12px">
+        A space of your own.
+      </h2>
+      <p class="muted">
+        A place to collect your thoughts, follow your curiosity,
+        remember the moments that matter, and become who you want to be.
+        No audience required.
       </p>
-
-      <div style="
-        height:8px;
-        background:var(--border, #30303d);
-        border-radius:20px;
-        overflow:hidden;
-      ">
-        <div style="
-          width:${percentage}%;
-          height:100%;
-          background:var(--purple, #8b5cf6);
-          border-radius:20px;
-          transition:width .3s ease;
-        "></div>
-      </div>
-
-      <p style="margin-top:10px;font-weight:700">${percentage}%</p>
     </section>
 
-    <section class="progress-card" style="margin-top:20px">
-      <h2>Daily Checklist</h2>
+    <section class="content-card">
+      <div class="card-heading">
+        <div>
+          <p class="eyebrow">YOUR DAILY SYSTEM</p>
+          <h2>Today's mission</h2>
+        </div>
+        <strong>${percentage}%</strong>
+      </div>
 
-      <div id="task-list" style="
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-        margin-top:16px;
-      ">
+      <p class="muted">${completed} of ${total} tasks complete</p>
+
+      <div style="height:7px;background:var(--border);border-radius:20px;overflow:hidden;margin-top:12px">
+        <div style="width:${percentage}%;height:100%;background:var(--purple);transition:width .3s"></div>
+      </div>
+
+      <div id="task-list" style="margin-top:18px">
         ${day.tasks.map(task => `
-          <label style="
-            display:flex;
-            align-items:center;
-            gap:12px;
-            padding:12px;
-            border-radius:10px;
-            cursor:pointer;
-            background:var(--card-hover, rgba(255,255,255,.03));
-          ">
-            <input
-              type="checkbox"
-              data-task-id="${task.id}"
-              ${task.done ? "checked" : ""}
-              style="accent-color:var(--green, #62d6a5)"
-            >
-            <span style="
-              flex:1;
-              ${task.done ? "text-decoration:line-through;opacity:.75;" : ""}
-            ">${escapeHTML(task.title)}</span>
+          <label style="display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border);border-radius:10px;cursor:pointer">
+            <input type="checkbox" data-task-id="${task.id}" ${task.done ? "checked" : ""} style="width:18px;height:18px;flex:0 0 18px;accent-color:var(--purple)">
+            <span style="flex:1;${task.done ? "text-decoration:line-through;opacity:.65" : ""}">${escapeHTML(task.title)}</span>
           </label>
         `).join("")}
       </div>
 
       ${percentage === 100 ? `
         <div class="completion-message">
-          <strong>🔥 Mission complete.</strong>
-          <p style="margin-top:6px;font-size:13px">
-            You showed up for yourself today. That's the standard.
-          </p>
+          <strong>Mission complete.</strong>
+          <p style="margin-top:6px">You showed up for yourself today.</p>
         </div>
       ` : ""}
-      
-      <button id="reset-day" style="margin-top:18px">
+
+      <button class="secondary-btn" id="reset-day" style="margin-top:12px">
         Reset today's checklist
       </button>
     </section>
   `;
 
-  document.querySelectorAll("#task-list input[type='checkbox']").forEach(input => {
+  document.querySelectorAll("[data-task-id]").forEach(input => {
     input.addEventListener("change", () => {
       const data = loadData();
       const key = todayKey();
-      const currentDay = data.days[key] || { tasks: [] };
-      const task = currentDay.tasks.find(
+      const task = data.days[key]?.tasks?.find(
         item => item.id === Number(input.dataset.taskId)
       );
 
       if (task) {
         task.done = input.checked;
-        data.days[key] = currentDay;
         saveData(data);
       }
 
@@ -182,68 +171,43 @@ function renderToday() {
   });
 
   document.getElementById("reset-day").addEventListener("click", () => {
-    if (confirm("Reset all of today's tasks?")) {
-      const data = loadData();
-      data.days[todayKey()] = {
-        tasks: DEFAULT_TASKS.map(task => ({ ...task }))
-      };
-      saveData(data);
-      renderToday();
-    }
+    if (!confirm("Reset today's checklist? Previous days will be preserved.")) return;
+
+    const data = loadData();
+    data.days[todayKey()] = {
+      tasks: DEFAULT_TASKS.map(task => ({ ...task }))
+    };
+
+    saveData(data);
+    renderToday();
   });
 }
+
+/* MY GROWTH — EXISTING GOALS */
 
 function renderGrowth() {
   const data = loadData();
 
   document.getElementById("page-content").innerHTML = `
-    <section class="progress-card">
-      <h2>Growth Goals</h2>
-      <p style="margin:8px 0 16px">
+    <section class="content-card">
+      <p class="eyebrow">YOUR NEXT CHAPTER</p>
+      <h2>Growth goals</h2>
+      <p class="muted" style="margin:8px 0 18px">
         Build yourself one goal at a time.
       </p>
 
-      <form id="goal-form" style="
-        display:flex;
-        gap:10px;
-        margin-bottom:18px;
-        flex-wrap:wrap;
-      ">
-        <input
-          id="goal-input"
-          type="text"
-          placeholder="Add a personal goal..."
-          maxlength="120"
-          required
-          style="flex:1;min-width:160px"
-        >
-        <button type="submit">Add goal</button>
+      <form id="goal-form" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+        <input id="goal-input" type="text" placeholder="Add a personal goal..." maxlength="120" required style="flex:1;min-width:160px">
+        <button class="primary-btn" type="submit">Add goal</button>
       </form>
 
-      <div id="goal-list" style="
-        display:flex;
-        flex-direction:column;
-        gap:10px;
-      ">
+      <div id="goal-list">
         ${data.goals.length ? data.goals.map(goal => `
-          <div style="
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:12px;
-            border-radius:10px;
-            background:var(--card-hover, rgba(255,255,255,.03));
-          ">
+          <div style="display:flex;align-items:center;gap:10px;padding:13px;margin-bottom:10px;border:1px solid var(--border);border-radius:10px">
             <span style="flex:1">${escapeHTML(goal.title)}</span>
-            <button
-              type="button"
-              data-delete-goal="${escapeHTML(goal.id)}"
-              aria-label="Delete goal"
-            >Delete</button>
+            <button class="secondary-btn" type="button" data-delete-goal="${escapeHTML(goal.id)}">Delete</button>
           </div>
-        `).join("") : `
-          <p>No goals yet. Add your first one above.</p>
-        `}
+        `).join("") : `<p class="muted">No goals yet. Add your first one.</p>`}
       </div>
     </section>
   `;
@@ -253,7 +217,6 @@ function renderGrowth() {
 
     const input = document.getElementById("goal-input");
     const title = input.value.trim();
-
     if (!title) return;
 
     const updated = loadData();
@@ -272,38 +235,41 @@ function renderGrowth() {
       updated.goals = updated.goals.filter(
         goal => String(goal.id) !== button.dataset.deleteGoal
       );
-
       saveData(updated);
       renderGrowth();
     });
   });
 }
 
-function renderVault() {
+/* JOURNAL — PRIVATE WRITING */
+
+function renderJournal(page) {
   const data = loadData();
 
+  const headings = {
+    entries: "Your latest thoughts, all in one place.",
+    reflections: "Pause. Reflect. Understand.",
+    memories: "Keep the moments you don't want to lose."
+  };
+
   document.getElementById("page-content").innerHTML = `
-    <section class="progress-card">
-      <h2>Your Private Vault</h2>
-      <p style="margin:8px 0 16px">
-        Write privately. Think clearly. You don't have to share everything.
+    <section class="content-card">
+      <p class="eyebrow">YOUR PRIVATE JOURNAL</p>
+      <h2>${escapeHTML(PAGE_TITLES[page])}</h2>
+      <p class="muted" style="margin:10px 0 20px">
+        ${escapeHTML(headings[page])}
       </p>
 
-      <textarea
-        id="vault-notes"
-        placeholder="Write your thoughts, lessons, ideas, or reflections..."
-        rows="12"
-        style="width:100%;resize:vertical"
-      >${escapeHTML(data.notes)}</textarea>
+      <textarea id="journal-notes" rows="12" placeholder="Write freely. This space is yours...">${escapeHTML(data.notes)}</textarea>
 
-      <p id="vault-status" style="margin-top:10px;font-size:13px">
+      <p id="journal-status" class="muted" style="margin-top:10px">
         Saved locally in this browser.
       </p>
     </section>
   `;
 
-  const textarea = document.getElementById("vault-notes");
-  const status = document.getElementById("vault-status");
+  const textarea = document.getElementById("journal-notes");
+  const status = document.getElementById("journal-status");
 
   textarea.addEventListener("input", () => {
     const updated = loadData();
@@ -313,150 +279,182 @@ function renderVault() {
   });
 }
 
+/* EXPLORE, MY WORLD, AND OTHER PERSONAL COLLECTIONS */
+
+function renderCollection(page) {
+  const data = loadData();
+  const value = typeof data.pages[page] === "string" ? data.pages[page] : "";
+
+  const descriptions = {
+    knowledge: "Things you learn and want to understand deeply.",
+    psychology: "Ideas about the mind, human behaviour, and life.",
+    culture: "Songs, artists, films, and culture worth remembering.",
+    ideas: "Interesting discoveries and thoughts to revisit.",
+    creativity: "Your creative experiments and unfinished ideas.",
+    habits: "The routines and principles you're building.",
+    fitness: "Training notes, personal records, and recovery.",
+    learning: "Skills you're developing and lessons you've learned.",
+    milestones: "Small wins and important moments in your progress.",
+    music: "Songs for particular moods, seasons, and memories.",
+    interests: "The things that make your world feel like yours.",
+    inspiration: "Words, images, people, and ideas that move you."
+  };
+
+  document.getElementById("page-content").innerHTML = `
+    <section class="content-card">
+      <p class="eyebrow">YOUR PERSONAL COLLECTION</p>
+      <h2>${escapeHTML(PAGE_TITLES[page])}</h2>
+      <p class="muted" style="margin:10px 0 20px">
+        ${escapeHTML(descriptions[page] || "A collection that belongs to you.")}
+      </p>
+
+      <textarea id="collection-notes" rows="12" placeholder="Collect your thoughts, links, lessons, song names, or ideas here...">${escapeHTML(value)}</textarea>
+
+      <p id="collection-status" class="muted" style="margin-top:10px">
+        Saved locally in this browser.
+      </p>
+    </section>
+  `;
+
+  const textarea = document.getElementById("collection-notes");
+  const status = document.getElementById("collection-status");
+
+  textarea.addEventListener("input", () => {
+    const updated = loadData();
+    updated.pages[page] = textarea.value;
+    saveData(updated);
+    status.textContent = "Saved locally in this browser.";
+  });
+}
+
+/* ARCHIVE — SEVEN-DAY PROGRESS */
+
 function calculateStreak(data) {
   let streak = 0;
-  const checkDate = new Date();
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+
   const today = data.days[todayKey()];
+  const complete = day => day?.tasks?.length > 0 && day.tasks.every(task => task.done);
 
-  // If today's checklist is unfinished, allow yesterday's streak
-  // to remain visible until the current day is completed or missed.
-  const todayComplete = today &&
-    today.tasks.length > 0 &&
-    today.tasks.every(task => task.done);
+  if (!complete(today)) date.setDate(date.getDate() - 1);
 
-  if (!todayComplete) {
-    checkDate.setDate(checkDate.getDate() - 1);
-  }
-
-  while (true) {
-    const key = todayKey(checkDate);
-    const day = data.days[key];
-
-    if (
-      !day ||
-      !Array.isArray(day.tasks) ||
-      day.tasks.length === 0 ||
-      !day.tasks.every(task => task.done)
-    ) {
-      break;
-    }
-
+  while (complete(data.days[todayKey(date)])) {
     streak++;
-    checkDate.setDate(checkDate.getDate() - 1);
+    date.setDate(date.getDate() - 1);
   }
 
   return streak;
 }
 
-function renderProgress() {
+function renderArchive() {
   const data = loadData();
   const today = getToday();
-  const completedToday = today.tasks.filter(task => task.done).length;
-  const totalToday = today.tasks.length;
-  const percentage = totalToday
-    ? Math.round((completedToday / totalToday) * 100)
-    : 0;
+  const completed = today.tasks.filter(task => task.done).length;
+  const percentage = Math.round(completed / today.tasks.length * 100);
 
-  const streak = calculateStreak(data);
-  const dates = Object.keys(data.days || {}).sort().reverse();
-  const recentDates = dates.slice(0, 7);
+  const days = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setHours(12, 0, 0, 0);
+    date.setDate(date.getDate() - i);
+
+    const key = todayKey(date);
+    const tasks = data.days[key]?.tasks || [];
+    const done = tasks.filter(task => task.done).length;
+
+    days.push({
+      key,
+      label: date.toLocaleDateString(undefined, { weekday: "short" }),
+      done,
+      total: tasks.length,
+      percent: tasks.length ? Math.round(done / tasks.length * 100) : 0
+    });
+  }
+
+  const average = Math.round(days.reduce((sum, day) => sum + day.percent, 0) / 7);
 
   document.getElementById("page-content").innerHTML = `
-    <section class="progress-card">
-      <h2>🔥 Current Streak</h2>
-      <p style="font-size:36px;font-weight:700;margin:12px 0">
-        ${streak} day${streak === 1 ? "" : "s"}
-      </p>
-      <p>Complete every daily task to build your streak.</p>
+    <section class="content-card">
+      <p class="eyebrow">LOOK HOW FAR YOU'VE COME</p>
+      <h2>Your progress</h2>
 
-      <div style="margin-top:20px">
-        <h3>Today's Completion</h3>
-        <p style="font-size:24px;font-weight:700;margin-top:8px">
-          ${percentage}%
-        </p>
-        <p>${completedToday} of ${totalToday} tasks completed</p>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px">
+        <div class="panel-card">
+          <p class="muted">Current streak</p>
+          <h2 style="margin-top:8px">${calculateStreak(data)} days</h2>
+        </div>
+        <div class="panel-card">
+          <p class="muted">Today's progress</p>
+          <h2 style="margin-top:8px">${percentage}%</h2>
+        </div>
+        <div class="panel-card">
+          <p class="muted">7-day average</p>
+          <h2 style="margin-top:8px">${average}%</h2>
+        </div>
+        <div class="panel-card">
+          <p class="muted">Tasks completed this week</p>
+          <h2 style="margin-top:8px">${days.reduce((sum, day) => sum + day.done, 0)}</h2>
+        </div>
       </div>
     </section>
 
-    <section class="progress-card" style="margin-top:20px">
-      <h2>Recent History</h2>
-      <p style="margin:8px 0 14px">
-        Days recorded: <strong>${dates.length}</strong>
+    <section class="content-card">
+      <h2>Last seven days</h2>
+      <p class="muted" style="margin:8px 0 22px">
+        Days without recorded tasks are shown as 0%.
       </p>
 
-      ${recentDates.length ? `
-        <div style="display:flex;flex-direction:column;gap:12px">
-          ${recentDates.map(key => {
-            const day = data.days[key];
-            const total = day?.tasks?.length || 0;
-            const completed = day?.tasks?.filter(task => task.done).length || 0;
-            const percent = total ? Math.round(completed / total * 100) : 0;
-
-            return `
-              <div style="
-                padding:12px;
-                border-radius:10px;
-                background:var(--card-hover, rgba(255,255,255,.03));
-              ">
-                <div style="
-                  display:flex;
-                  justify-content:space-between;
-                  gap:12px;
-                  margin-bottom:8px;
-                ">
-                  <span>${escapeHTML(key)}</span>
-                  <strong>${percent}%</strong>
-                </div>
-
-                <div style="
-                  height:6px;
-                  background:var(--border, #30303d);
-                  border-radius:20px;
-                  overflow:hidden;
-                ">
-                  <div style="
-                    height:100%;
-                    width:${percent}%;
-                    background:var(--purple, #8b5cf6);
-                    border-radius:20px;
-                  "></div>
-                </div>
-
-                <p style="font-size:12px;margin-top:6px">
-                  ${completed} / ${total} tasks
-                </p>
-              </div>
-            `;
-          }).join("")}
+      ${days.map(day => `
+        <div style="margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:8px">
+            <span>${escapeHTML(day.key)} · ${day.label}</span>
+            <strong>${day.percent}%</strong>
+          </div>
+          <div style="height:7px;background:var(--border);border-radius:20px;overflow:hidden">
+            <div style="height:100%;width:${day.percent}%;background:var(--purple);border-radius:20px"></div>
+          </div>
+          <p class="muted" style="margin-top:6px">${day.done} / ${day.total} tasks</p>
         </div>
-      ` : `
-        <p>Your daily history will appear here as you use the app.</p>
-      `}
+      `).join("")}
     </section>
   `;
 }
+
+/* NAVIGATION */
 
 function showPage(page) {
   const pageContent = document.getElementById("page-content");
   const pageTitle = document.getElementById("page-title");
 
-  const pages = {
-    today: { title: "Today", render: renderToday },
-    growth: { title: "Growth", render: renderGrowth },
-    vault: { title: "Vault", render: renderVault },
-    progress: { title: "Progress", render: renderProgress }
-  };
+  const journalPages = ["entries", "reflections", "memories"];
+  const collectionPages = [
+    "knowledge", "psychology", "culture", "ideas", "creativity",
+    "fitness", "learning", "milestones", "music", "interests", "inspiration"
+  ];
 
-  if (!pages[page]) return;
+  if (page === "home") {
+    pageTitle.textContent = "Welcome home.";
+    renderToday();
+  } else if (page === "habits") {
+    pageTitle.textContent = "Habits & discipline";
+    renderGrowth();
+  } else if (page === "archive") {
+    pageTitle.textContent = "Your archive";
+    renderArchive();
+  } else if (journalPages.includes(page)) {
+    pageTitle.textContent = PAGE_TITLES[page];
+    renderJournal(page);
+  } else if (collectionPages.includes(page)) {
+    pageTitle.textContent = PAGE_TITLES[page];
+    renderCollection(page);
+  } else {
+    return;
+  }
 
-  pageTitle.textContent = pages[page].title;
-  pages[page].render();
-
-  document.querySelectorAll("[data-page]").forEach(button => {
-    button.classList.toggle(
-      "active",
-      button.dataset.page === page
-    );
+  document.querySelectorAll(".nav-item, .sub-nav-item").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === page);
   });
 
   pageContent.classList.remove("page-enter");
@@ -464,11 +462,26 @@ function showPage(page) {
   pageContent.classList.add("page-enter");
 }
 
-document.querySelectorAll("[data-page]").forEach(button => {
+/* Expand/collapse parent sections; open pages from subheadings. */
+
+document.querySelectorAll(".nav-toggle").forEach(button => {
+  button.addEventListener("click", () => {
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    const menuId = button.getAttribute("aria-controls");
+    const menu = document.getElementById(menuId);
+
+    button.setAttribute("aria-expanded", String(!expanded));
+    menu.hidden = expanded;
+  });
+});
+
+document.querySelectorAll(".nav-item:not(.nav-toggle), .sub-nav-item").forEach(button => {
   button.addEventListener("click", () => {
     showPage(button.dataset.page);
   });
 });
+
+/* DATE */
 
 const dateElement = document.getElementById("today-date");
 
@@ -481,7 +494,11 @@ if (dateElement) {
   });
 }
 
-showPage("today");
+/* START */
+
+showPage("home");
+
+/* KEEP THE EXISTING SERVICE WORKER */
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
