@@ -421,9 +421,8 @@ textarea {
 
 .nav-item:hover {
   background: #211b35;
-  transform: translateX(4px);
+  transform: none;
 }
-
 .nav-item.active {
   box-shadow: inset 3px 0 var(--purple),
               0 0 18px #8057ff12;
@@ -679,3 +678,82 @@ textarea:focus-visible {
   }
 }
 
+
+/* WIN THE DAY — Blog-style sidebar */
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 2px;
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-item {
+  width: 100%;
+  min-height: 44px;
+}
+
+.nav-toggle {
+  padding-right: 12px;
+}
+
+.nav-chevron {
+  margin-left: auto;
+  width: auto !important;
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-chevron {
+  transform: rotate(90deg);
+}
+
+.sub-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 2px 0 8px 20px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+}
+
+.sub-navigation[hidden] {
+  display: none;
+}
+
+.sub-nav-item {
+  border: 0;
+  border-radius: 7px;
+  padding: 10px 9px;
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.sub-nav-item:hover {
+  background: var(--card-hover);
+  color: var(--text);
+}
+
+.sub-nav-item.active {
+  color: var(--purple-light);
+  background: #8057ff16;
+}
+
+@media (max-width: 650px) {
+  /* Keep the existing mobile navigation usable;
+     expandable blog sections will be refined later. */
+  .navigation {
+    overflow: visible;
+  }
+}
